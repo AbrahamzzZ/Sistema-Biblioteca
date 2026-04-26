@@ -1,0 +1,16 @@
+# Compilados
+target/
+*.class
+
+# NetBeans
+nbactions.xml
+nb-configuration.xml
+.nb-gradle/
+
+# Archivos de entorno
+.DS_Store
+*.log
+
+# Base de datos local (si guardas archivos .mdf)
+*.mdf
+*.ldf
