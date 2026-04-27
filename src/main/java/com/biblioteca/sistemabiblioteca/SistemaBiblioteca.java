@@ -4,6 +4,8 @@
 
 package com.biblioteca.sistemabiblioteca;
 
+import static dao.Conexion.testConnection;
+
 /**
  *
  * @author herma
@@ -11,6 +13,6 @@ package com.biblioteca.sistemabiblioteca;
 public class SistemaBiblioteca {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        testConnection();
     }
 }
