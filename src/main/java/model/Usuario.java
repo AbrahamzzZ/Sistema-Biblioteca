@@ -32,14 +32,14 @@ public class Usuario {
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
     
-    public String getNombreUsuario() { return nombreCompleto; }
-    public void setNombreUsuario(String nombreUsuario) { this.nombreCompleto = nombreUsuario; }
+    public String getNombreCompleto() { return nombreCompleto; }
+    public void setNombreCompleto(String nombreUsuario) { this.nombreCompleto = nombreCompleto; }
     
-    public String getContrasenia() { return clave; }
-    public void setContrasenia(String contrasenia) { this.clave = contrasenia; }
+    public String getClave() { return clave; }
+    public void setClave(String clave) { this.clave = clave; }
     
-    public String getEmail() { return correoElectronico; }
-    public void setEmail(String email) { this.correoElectronico = email; }
+    public String getCorreoElectronico() { return correoElectronico; }
+    public void setCorreoElectronico(String email) { this.correoElectronico = email; }
     
     public Date getFechaCreacion() { return fechaCreacion; }
     public void setFechaCreacion(Date fechaCreacion) { this.fechaCreacion = fechaCreacion; }
