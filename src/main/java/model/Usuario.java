@@ -33,13 +33,13 @@ public class Usuario {
     public void setId(int id) { this.id = id; }
     
     public String getNombreCompleto() { return nombreCompleto; }
-    public void setNombreCompleto(String nombreUsuario) { this.nombreCompleto = nombreCompleto; }
+    public void setNombreCompleto(String nombreCompleto) { this.nombreCompleto = nombreCompleto; }
     
     public String getClave() { return clave; }
     public void setClave(String clave) { this.clave = clave; }
     
     public String getCorreoElectronico() { return correoElectronico; }
-    public void setCorreoElectronico(String email) { this.correoElectronico = email; }
+    public void setCorreoElectronico(String correoElectronico) { this.correoElectronico = correoElectronico; }
     
     public Date getFechaCreacion() { return fechaCreacion; }
     public void setFechaCreacion(Date fechaCreacion) { this.fechaCreacion = fechaCreacion; }
