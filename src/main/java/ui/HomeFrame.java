@@ -4,15 +4,27 @@
  */
 package ui;
 
-import java.awt.Frame;
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 /**
  *
  * @author herma
  */
 public class HomeFrame extends javax.swing.JFrame {
+    
+    // CardLayout para cambiar entre paneles
+    private CardLayout cardLayout;
+    private JPanel panelContenedor;
+    
+    // Paneles de cada módulo
+    private ClientePanel clientePanel;
+    private LibroPanel libroPanel;
+    private PrestamoPanel prestamoPanel;
+    private JPanel panelBienvenida;
 
     /**
      * Creates new form HomeFrame
@@ -22,6 +34,59 @@ public class HomeFrame extends javax.swing.JFrame {
         setLocationRelativeTo(null); 
         setTitle("Sistema de Biblioteca - Dashboard");
         setResizable(false);
+        inicializarPaneles();
+    }
+    
+    private void inicializarPaneles() {
+        // Crear el CardLayout y el panel contenedor
+        cardLayout = new CardLayout();
+        pnPrincipal.setLayout(cardLayout);
+        
+        // Crear los paneles
+        clientePanel = new ClientePanel();
+        libroPanel = new LibroPanel();
+        prestamoPanel = new PrestamoPanel();
+        
+        // Panel de bienvenida
+        panelBienvenida = new JPanel();
+        panelBienvenida.add(new javax.swing.JLabel("Bienvenido al Sistema de Biblioteca"));
+        
+        // Agregar al contenedor con nombres
+        pnPrincipal.add(panelBienvenida, "BIENVENIDA");
+        pnPrincipal.add(clientePanel, "CLIENTES");
+        pnPrincipal.add(libroPanel, "LIBROS");
+        pnPrincipal.add(prestamoPanel, "PRESTAMOS");
+        
+        // Mostrar bienvenida al inicio
+        cardLayout.show(pnPrincipal, "BIENVENIDA");
+        
+        // Revalidar y repintar
+        revalidate();
+        repaint();
+    }
+    
+    // Métodos para abrir paneles
+    private void abrirClientes() {
+        cardLayout.show(pnPrincipal, "CLIENTES");
+    }
+    
+    private void abrirLibros() {
+        cardLayout.show(pnPrincipal, "LIBROS");
+    }
+    
+    private void abrirPrestamos() {
+        cardLayout.show(pnPrincipal, "PRESTAMOS");
+    }
+    
+    private void cerrarSesion() {
+        int confirm = JOptionPane.showConfirmDialog(this, 
+            "¿Está seguro de cerrar sesión?", 
+            "Confirmar", 
+            JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            new LoginFrame().setVisible(true);
+            this.dispose();
+        }
     }
 
     /**
@@ -33,66 +98,86 @@ public class HomeFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
+        pnPrincipal = new javax.swing.JPanel();
         mnPrincipal = new javax.swing.JMenuBar();
         mnCliente = new javax.swing.JMenu();
+        mniClientes = new javax.swing.JMenuItem();
         mnLibro = new javax.swing.JMenu();
+        mniLibro = new javax.swing.JMenuItem();
         mnPrestamo = new javax.swing.JMenu();
-        mnCerrarSesion = new javax.swing.JMenu();
+        mniPrestamo = new javax.swing.JMenuItem();
+        mniSalir = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
 
-        jPanel1.setBackground(java.awt.SystemColor.activeCaption);
+        pnPrincipal.setBackground(java.awt.SystemColor.activeCaption);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout pnPrincipalLayout = new javax.swing.GroupLayout(pnPrincipal);
+        pnPrincipal.setLayout(pnPrincipalLayout);
+        pnPrincipalLayout.setHorizontalGroup(
+            pnPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 757, Short.MAX_VALUE)
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 398, Short.MAX_VALUE)
+        pnPrincipalLayout.setVerticalGroup(
+            pnPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 433, Short.MAX_VALUE)
         );
 
         mnPrincipal.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        mnCliente.setText("Clientes");
+        mnCliente.setText("Cliente");
         mnCliente.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         mnCliente.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 12)); // NOI18N
-        mnCliente.addActionListener(new java.awt.event.ActionListener() {
+
+        mniClientes.setText("Ver clientes");
+        mniClientes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnClienteActionPerformed(evt);
+                mniClientesActionPerformed(evt);
             }
         });
+        mnCliente.add(mniClientes);
+
         mnPrincipal.add(mnCliente);
 
-        mnLibro.setText("Libros");
+        mnLibro.setText("Libro");
         mnLibro.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         mnLibro.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 12)); // NOI18N
-        mnLibro.addActionListener(new java.awt.event.ActionListener() {
+
+        mniLibro.setText("Ver libros");
+        mniLibro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnLibroActionPerformed(evt);
+                mniLibroActionPerformed(evt);
             }
         });
+        mnLibro.add(mniLibro);
+
         mnPrincipal.add(mnLibro);
 
         mnPrestamo.setText("Prestamos");
         mnPrestamo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         mnPrestamo.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 12)); // NOI18N
-        mnPrestamo.addActionListener(new java.awt.event.ActionListener() {
+
+        mniPrestamo.setText("Realizar prestamos");
+        mniPrestamo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnPrestamoActionPerformed(evt);
+                mniPrestamoActionPerformed(evt);
             }
         });
+        mnPrestamo.add(mniPrestamo);
+
         mnPrincipal.add(mnPrestamo);
 
-        mnCerrarSesion.setText("Cerrar Sesión");
-        mnCerrarSesion.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        mnCerrarSesion.addActionListener(new java.awt.event.ActionListener() {
+        mniSalir.setText("Ayuda");
+        mniSalir.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 12)); // NOI18N
+
+        jMenuItem1.setText("Salir");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnCerrarSesionActionPerformed(evt);
+                jMenuItem1ActionPerformed(evt);
             }
         });
-        mnPrincipal.add(mnCerrarSesion);
+        mniSalir.add(jMenuItem1);
+
+        mnPrincipal.add(mniSalir);
 
         setJMenuBar(mnPrincipal);
 
@@ -100,46 +185,42 @@ public class HomeFrame extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pnPrincipal, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pnPrincipal, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void mnClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnClienteActionPerformed
-        for (Frame frame : JFrame.getFrames()) {
-            if (frame instanceof ClienteFrame && frame.isVisible()) {
-                frame.toFront();
-                return;
-            }
-        }
-        // Crear nueva instancia
-        ClienteFrame clientesFrame = new ClienteFrame();
-        clientesFrame.setVisible(true);
-    }//GEN-LAST:event_mnClienteActionPerformed
+    private void mniClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniClientesActionPerformed
+        abrirClientes();
+    }//GEN-LAST:event_mniClientesActionPerformed
 
-    private void mnLibroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnLibroActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_mnLibroActionPerformed
+    private void mniLibroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniLibroActionPerformed
+        abrirLibros();
+    }//GEN-LAST:event_mniLibroActionPerformed
 
-    private void mnPrestamoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnPrestamoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_mnPrestamoActionPerformed
+    private void mniPrestamoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniPrestamoActionPerformed
+        abrirPrestamos();
+    }//GEN-LAST:event_mniPrestamoActionPerformed
 
-    private void mnCerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnCerrarSesionActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_mnCerrarSesionActionPerformed
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        cerrarSesion();
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JMenu mnCerrarSesion;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenu mnCliente;
     private javax.swing.JMenu mnLibro;
     private javax.swing.JMenu mnPrestamo;
     private javax.swing.JMenuBar mnPrincipal;
+    private javax.swing.JMenuItem mniClientes;
+    private javax.swing.JMenuItem mniLibro;
+    private javax.swing.JMenuItem mniPrestamo;
+    private javax.swing.JMenu mniSalir;
+    private javax.swing.JPanel pnPrincipal;
     // End of variables declaration//GEN-END:variables
 }
