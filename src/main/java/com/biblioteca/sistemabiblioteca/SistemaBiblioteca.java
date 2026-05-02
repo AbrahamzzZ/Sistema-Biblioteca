@@ -4,7 +4,7 @@
 
 package com.biblioteca.sistemabiblioteca;
 
-import static dao.Conexion.testConnection;
+import ui.LoginFrame;
 
 /**
  *
@@ -13,6 +13,21 @@ import static dao.Conexion.testConnection;
 public class SistemaBiblioteca {
 
     public static void main(String[] args) {
-        testConnection();
+        try{
+            for(javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()){
+                if("Nimbus".equals(info.getName())){
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;  
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        } 
+        
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new LoginFrame().setVisible(true);
+            }
+        });
     }
 }
