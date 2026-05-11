@@ -4,17 +4,166 @@
  */
 package ui;
 
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import model.Libro;
+import services.LibroService;
+
 /**
  *
  * @author herma
  */
 public class LibroPanel extends javax.swing.JPanel {
 
+    // Servicio para acceder a la lógica de negocio
+    private LibroService libroService;
+    
+    // Variables para control de selección
+    private int selectedId = -1;
+    
     /**
      * Creates new form LibroPanel
      */
     public LibroPanel() {
         initComponents();
+        // Inicializar el servicio
+        libroService = new LibroService();
+
+        // Configurar el spinner para la cantidad
+        jSpinner1.setModel(new SpinnerNumberModel(0, 0, 999, 1));
+
+        // Cargar datos en la tabla
+        listarLibros();
+    }
+    
+    private void listarLibros() {
+        DefaultTableModel model = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                // Solo la columna de acción (última columna) es editable
+                return column == 7;
+            }
+        };
+
+        model.setColumnIdentifiers(new String[]{"ID", "Título", "Autor", "Año", "Editorial", "Cantidad", "Estado", "Acción"});
+        tbLibros.setModel(model);
+
+        try {
+            List<Libro> libros = libroService.listarLibros();
+            for (Libro libro : libros) {
+                model.addRow(new Object[]{
+                    libro.getId(),
+                    libro.getTitulo(),
+                    libro.getAutor(),
+                    libro.getAnioPublicacion(),
+                    libro.getEditorial(),
+                    libro.getCantidad(),
+                    libro.isEstado() ? "Activo" : "Inactivo",
+                    "Cargar"  // Texto del botón
+                });
+            }
+
+            // Configurar el renderizador y editor para la columna de botones
+            tbLibros.getColumn("Acción").setCellRenderer(new ButtonRenderer());
+            tbLibros.getColumn("Acción").setCellEditor(new ButtonEditor(new JCheckBox()));
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al cargar libros: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    private void limpiarCampos() {
+       txtNombre.setText("");
+       txtAutor.setText("");
+       txtAnioPublicacion.setText("");
+       txtEditorial.setText("");
+       jSpinner1.setValue(0);
+       cmbEstado.setSelectedIndex(0);
+       selectedId = -1;
+       txtNombre.requestFocus();
+   }
+    
+    private boolean validarCampos() {
+        if (txtNombre.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "El título del libro es obligatorio", "Validación", JOptionPane.WARNING_MESSAGE);
+            txtNombre.requestFocus();
+            return false;
+        }
+
+        if (txtAutor.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "El autor del libro es obligatorio", "Validación", JOptionPane.WARNING_MESSAGE);
+            txtAutor.requestFocus();
+            return false;
+        }
+
+        // Validar año (si no está vacío, debe ser número)
+        String anioStr = txtAnioPublicacion.getText().trim();
+        if (!anioStr.isEmpty()) {
+            try {
+                int anio = Integer.parseInt(anioStr);
+                if (anio < 0 || anio > 2026) {
+                    JOptionPane.showMessageDialog(this, "El año debe ser entre 0 y 2026", "Validación", JOptionPane.WARNING_MESSAGE);
+                    txtAnioPublicacion.requestFocus();
+                    return false;
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "El año debe ser un número válido", "Validación", JOptionPane.WARNING_MESSAGE);
+                txtAnioPublicacion.requestFocus();
+                return false;
+            }
+        }
+
+        return true;
+    }
+    
+    private void cargarLibroDesdeFila(int row) {
+        if (row != -1) {
+            selectedId = (int) tbLibros.getValueAt(row, 0);
+            txtNombre.setText((String) tbLibros.getValueAt(row, 1));
+            txtAutor.setText((String) tbLibros.getValueAt(row, 2));
+
+            int anio = (int) tbLibros.getValueAt(row, 3);
+            txtAnioPublicacion.setText(anio > 0 ? String.valueOf(anio) : "");
+
+            txtEditorial.setText((String) tbLibros.getValueAt(row, 4));
+            jSpinner1.setValue((int) tbLibros.getValueAt(row, 5));
+            String estado = (String) tbLibros.getValueAt(row, 6);
+            cmbEstado.setSelectedIndex(estado.equals("Activo") ? 0 : 1);
+
+            // Resaltar la fila seleccionada en la tabla
+            tbLibros.setRowSelectionInterval(row, row);
+        }
+    }
+    
+    private Libro obtenerLibroDesdeCampos() {
+        Libro libro = new Libro();
+        if (selectedId > 0) {
+            libro.setId(selectedId);
+        }
+        libro.setTitulo(txtNombre.getText().trim());
+        libro.setAutor(txtAutor.getText().trim());
+        
+        String anioStr = txtAnioPublicacion.getText().trim();
+        try {
+            libro.setAnioPublicacion(anioStr.isEmpty() ? 0 : Integer.parseInt(anioStr));
+        } catch (NumberFormatException e) {
+            libro.setAnioPublicacion(0);
+        }
+        
+        libro.setEditorial(txtEditorial.getText().trim());
+        libro.setCantidad((Integer) jSpinner1.getValue());
+        libro.setEstado(cmbEstado.getSelectedIndex() == 0);
+        return libro;
     }
 
     /**
@@ -69,9 +218,19 @@ public class LibroPanel extends javax.swing.JPanel {
         btnEditar.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 12)); // NOI18N
         btnEditar.setText("Editar");
         btnEditar.setPreferredSize(new java.awt.Dimension(65, 23));
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
+            }
+        });
 
         btnRegistrar.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 12)); // NOI18N
         btnRegistrar.setText("Registrar");
+        btnRegistrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRegistrarActionPerformed(evt);
+            }
+        });
 
         btnEliminar.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 12)); // NOI18N
         btnEliminar.setText("Eliminar");
@@ -85,6 +244,11 @@ public class LibroPanel extends javax.swing.JPanel {
         btnLimpiar.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 12)); // NOI18N
         btnLimpiar.setText("Limpiar");
         btnLimpiar.setPreferredSize(new java.awt.Dimension(65, 23));
+        btnLimpiar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLimpiarActionPerformed(evt);
+            }
+        });
 
         lblTitulo.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 24)); // NOI18N
         lblTitulo.setText("Lista de Libros");
@@ -111,11 +275,6 @@ public class LibroPanel extends javax.swing.JPanel {
 
         cmbEstado.setFont(new java.awt.Font("Microsoft Sans Serif", 0, 12)); // NOI18N
         cmbEstado.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Activo", "No Activo" }));
-        cmbEstado.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbEstadoActionPerformed(evt);
-            }
-        });
 
         lblEstado.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 12)); // NOI18N
         lblEstado.setText("Estado");
@@ -211,9 +370,7 @@ public class LibroPanel extends javax.swing.JPanel {
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 433, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 433, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -224,18 +381,149 @@ public class LibroPanel extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        // TODO add your handling code here:
+        if (selectedId == -1) {
+            JOptionPane.showMessageDialog(this, "Primero cargue un libro desde la tabla", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        String titulo = txtNombre.getText().trim();
+
+        int confirm = JOptionPane.showConfirmDialog(this,
+            "¿Está seguro de eliminar el libro '" + titulo + "'?",
+            "Confirmar eliminación",
+            JOptionPane.YES_NO_OPTION);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            try {
+                if (libroService.eliminarLibro(selectedId)) {
+                    JOptionPane.showMessageDialog(this, "Libro eliminado exitosamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                    limpiarCampos();
+                    listarLibros();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Error al eliminar el libro", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_btnEliminarActionPerformed
 
-    private void cmbEstadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbEstadoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cmbEstadoActionPerformed
+    private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
+        if (selectedId != -1) {
+            JOptionPane.showMessageDialog(this, "Para modificar un libro use el botón 'Editar'.\nO limpie los campos para registrar uno nuevo.", "Información", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
 
+        if (!validarCampos()) return;
+
+        try {
+            Libro libro = obtenerLibroDesdeCampos();
+            int id = libroService.registrarLibro(libro);
+
+            if (id > 0) {
+                JOptionPane.showMessageDialog(this, "Libro registrado exitosamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                limpiarCampos();
+                listarLibros();
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al registrar el libro", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error de validación", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnRegistrarActionPerformed
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+         if (selectedId == -1) {
+            JOptionPane.showMessageDialog(this, "Primero cargue un libro desde la tabla", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if (!validarCampos()) return;
+
+        try {
+            Libro libro = obtenerLibroDesdeCampos();
+
+            if (libroService.editarLibro(libro)) {
+                JOptionPane.showMessageDialog(this, "Libro actualizado exitosamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                limpiarCampos();
+                listarLibros();
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al actualizar el libro", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error de validación", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnEditarActionPerformed
+
+    private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
+        limpiarCampos();
+    }//GEN-LAST:event_btnLimpiarActionPerformed
+
+    class ButtonRenderer extends JButton implements TableCellRenderer {
+        public ButtonRenderer() {
+            setOpaque(true);
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                boolean isSelected, boolean hasFocus, int row, int column) {
+            setText((value == null) ? "Cargar" : value.toString());
+            return this;
+        }
+    }
+
+    // Clase para manejar clics en el botón
+    class ButtonEditor extends DefaultCellEditor {
+        protected JButton button;
+        private String label;
+        private boolean isPushed;
+        private int selectedRow;
+
+        public ButtonEditor(JCheckBox checkBox) {
+            super(checkBox);
+            button = new JButton();
+            button.setOpaque(true);
+            button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    fireEditingStopped();
+                    cargarLibroDesdeFila(selectedRow);
+                }
+            });
+        }
+
+        @Override
+        public Component getTableCellEditorComponent(JTable table, Object value,
+                boolean isSelected, int row, int column) {
+            label = (value == null) ? "Cargar" : value.toString();
+            button.setText(label);
+            isPushed = true;
+            selectedRow = row;
+            return button;
+        }
+
+        @Override
+        public Object getCellEditorValue() {
+            isPushed = false;
+            return label;
+        }
+
+        @Override
+        public boolean stopCellEditing() {
+            isPushed = false;
+            return super.stopCellEditing();
+        }
+
+        @Override
+        protected void fireEditingStopped() {
+            super.fireEditingStopped();
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnEditar;
