@@ -4,17 +4,146 @@
  */
 package ui;
 
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JCheckBox;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.JButton;
+import javax.swing.JTable;
+import javax.swing.table.TableCellRenderer;
+import model.Cliente;
+import services.ClienteService;
+
+
 /**
  *
  * @author herma
  */
 public class ClientePanel extends javax.swing.JPanel {
-
+    
+    // Servicio para acceder a la lógica de negocio
+    private ClienteService clienteService;
+    
+    // Variables para control de selección
+    private int selectedId = -1;
+    
     /**
      * Creates new form ClientePanel
      */
     public ClientePanel() {
         initComponents();
+        // Inicializar el servicio
+        clienteService = new ClienteService();
+        
+        // Cargar datos en la tabla
+        listarClientes();
+    }
+    
+    private void listarClientes() {
+        DefaultTableModel model = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == 7; // Solo columna de acción
+            }
+        };
+
+        model.setColumnIdentifiers(new String[]{"ID", "Nombre", "Cédula", "Teléfono", "Email", "Dirección", "Estado", "Acción"});
+        tbClientes.setModel(model);
+
+        try {
+            List<Cliente> clientes = clienteService.listarClientes();
+            for (Cliente cliente : clientes) {
+                model.addRow(new Object[]{
+                    cliente.getId(),
+                    cliente.getNombreCompleto(),
+                    cliente.getCedula(),
+                    cliente.getTelefono(),
+                    cliente.getCorreoElectronico(),
+                    cliente.getDireccion(),
+                    cliente.isEstado() ? "Activo" : "Inactivo",
+                    "Cargar"
+                });
+            }
+
+            // Configurar botón en la tabla
+            tbClientes.getColumn("Acción").setCellRenderer(new ButtonRenderer());
+            tbClientes.getColumn("Acción").setCellEditor(new ButtonEditor(new JCheckBox()));
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al cargar clientes: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void limpiarCampos() {
+        txtNombreCompleto.setText("");
+        txtCedula.setText("");
+        txtTelefono.setText("");
+        txtCorreoElectronico.setText("");
+        tpDireccion.setText("");
+        cmbEstado.setSelectedIndex(0);
+        selectedId = -1;
+        txtNombreCompleto.requestFocus();
+        tbClientes.clearSelection();
+    }
+
+    private void cargarClienteDesdeFila(int row) {
+        if (row != -1) {
+            selectedId = (int) tbClientes.getValueAt(row, 0);
+            txtNombreCompleto.setText((String) tbClientes.getValueAt(row, 1));
+            txtCedula.setText((String) tbClientes.getValueAt(row, 2));
+            txtTelefono.setText((String) tbClientes.getValueAt(row, 3));
+            txtCorreoElectronico.setText((String) tbClientes.getValueAt(row, 4));
+            tpDireccion.setText((String) tbClientes.getValueAt(row, 5));
+            String estado = (String) tbClientes.getValueAt(row, 6);
+            cmbEstado.setSelectedIndex(estado.equals("Activo") ? 0 : 1);
+
+            // Resaltar la fila seleccionada en la tabla
+            tbClientes.setRowSelectionInterval(row, row);
+        }
+    }
+    
+    private Cliente obtenerClienteDesdeCampos() {
+        Cliente cliente = new Cliente();
+        if (selectedId > 0) {
+            cliente.setId(selectedId);
+        }
+        cliente.setNombreCompleto(txtNombreCompleto.getText().trim());
+        cliente.setCedula(txtCedula.getText().trim());
+        cliente.setTelefono(txtTelefono.getText().trim());
+        cliente.setCorreoElectronico(txtCorreoElectronico.getText().trim());
+        cliente.setDireccion(tpDireccion.getText().trim());
+        cliente.setEstado(cmbEstado.getSelectedIndex() == 0);
+        return cliente;
+    }
+
+    private boolean validarCampos() {
+        if (txtNombreCompleto.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "El nombre completo es obligatorio", "Validación", JOptionPane.WARNING_MESSAGE);
+            txtNombreCompleto.requestFocus();
+            return false;
+        }
+        if (txtCedula.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "La cédula es obligatoria", "Validación", JOptionPane.WARNING_MESSAGE);
+            txtCedula.requestFocus();
+            return false;
+        }
+        String cedula = txtCedula.getText().trim();
+        if (cedula.length() < 7 || cedula.length() > 10) {
+            JOptionPane.showMessageDialog(this, "La cédula debe tener entre 7 y 10 dígitos", "Validación", JOptionPane.WARNING_MESSAGE);
+            txtCedula.requestFocus();
+            return false;
+        }
+        String email = txtCorreoElectronico.getText().trim();
+        if (!email.isEmpty() && !email.contains("@")) {
+            JOptionPane.showMessageDialog(this, "El correo electrónico no es válido", "Validación", JOptionPane.WARNING_MESSAGE);
+            txtCorreoElectronico.requestFocus();
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -28,7 +157,7 @@ public class ClientePanel extends javax.swing.JPanel {
 
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tbCliente = new javax.swing.JTable();
+        tbClientes = new javax.swing.JTable();
         btnEditar = new javax.swing.JButton();
         btnRegistrar = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
@@ -46,14 +175,14 @@ public class ClientePanel extends javax.swing.JPanel {
         lblEstado = new javax.swing.JLabel();
         lblDireccion = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTextPane1 = new javax.swing.JTextPane();
+        tpDireccion = new javax.swing.JTextPane();
 
         setPreferredSize(new java.awt.Dimension(757, 456));
 
         jPanel1.setBackground(java.awt.SystemColor.activeCaption);
         jPanel1.setPreferredSize(new java.awt.Dimension(757, 456));
 
-        tbCliente.setModel(new javax.swing.table.DefaultTableModel(
+        tbClientes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -64,22 +193,42 @@ public class ClientePanel extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(tbCliente);
+        jScrollPane1.setViewportView(tbClientes);
 
         btnEditar.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 12)); // NOI18N
         btnEditar.setText("Editar");
         btnEditar.setPreferredSize(new java.awt.Dimension(65, 23));
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
+            }
+        });
 
         btnRegistrar.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 12)); // NOI18N
         btnRegistrar.setText("Registrar");
+        btnRegistrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRegistrarActionPerformed(evt);
+            }
+        });
 
         btnEliminar.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 12)); // NOI18N
         btnEliminar.setText("Eliminar");
         btnEliminar.setPreferredSize(new java.awt.Dimension(65, 23));
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
 
         btnLimpiar.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 12)); // NOI18N
         btnLimpiar.setText("Limpiar");
         btnLimpiar.setPreferredSize(new java.awt.Dimension(65, 23));
+        btnLimpiar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLimpiarActionPerformed(evt);
+            }
+        });
 
         lblTitulo.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 24)); // NOI18N
         lblTitulo.setText("Lista de Clientes");
@@ -113,7 +262,7 @@ public class ClientePanel extends javax.swing.JPanel {
         lblDireccion.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 12)); // NOI18N
         lblDireccion.setText("Dirección:");
 
-        jScrollPane2.setViewportView(jTextPane1);
+        jScrollPane2.setViewportView(tpDireccion);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -161,9 +310,9 @@ public class ClientePanel extends javax.swing.JPanel {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(37, 37, 37)
                         .addComponent(lblNombreCompleto)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(txtNombreCompleto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtNombreCompleto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
                         .addComponent(lblCedula)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtCedula, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -182,20 +331,16 @@ public class ClientePanel extends javax.swing.JPanel {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(45, 45, 45)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(33, 33, 33)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnRegistrar)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblEstado)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cmbEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(24, 24, 24))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblEstado)
+                .addGap(10, 10, 10)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnRegistrar)
+                    .addComponent(btnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmbEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(36, 36, 36))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -206,10 +351,148 @@ public class ClientePanel extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 446, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 461, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
+        if (selectedId != -1) {
+            JOptionPane.showMessageDialog(this, "Para modificar use el botón 'Editar'.\nO limpie los campos para registrar uno nuevo.", 
+                    "Información", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        if (!validarCampos()) return;
+
+        try {
+            Cliente cliente = obtenerClienteDesdeCampos();
+            int id = clienteService.registrarCliente(cliente);
+
+            if (id > 0) {
+                JOptionPane.showMessageDialog(this, "Cliente registrado exitosamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                limpiarCampos();
+                listarClientes();
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al registrar el cliente", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error de validación", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnRegistrarActionPerformed
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+        if (selectedId == -1) {
+            JOptionPane.showMessageDialog(this, "Primero cargue un cliente desde la tabla", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if (!validarCampos()) return;
+
+        try {
+            Cliente cliente = obtenerClienteDesdeCampos();
+            if (clienteService.editarCliente(cliente)) {
+                JOptionPane.showMessageDialog(this, "Cliente actualizado exitosamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                limpiarCampos();
+                listarClientes();
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al actualizar el cliente", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error de validación", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnEditarActionPerformed
+
+    private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
+       limpiarCampos();
+    }//GEN-LAST:event_btnLimpiarActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        if (selectedId == -1) {
+            JOptionPane.showMessageDialog(this, "Primero cargue un cliente desde la tabla", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        String nombre = txtNombreCompleto.getText().trim();
+
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "¿Está seguro de eliminar el cliente '" + nombre + "'?",
+                "Confirmar eliminación",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            try {
+                if (clienteService.eliminarCliente(selectedId)) {
+                    JOptionPane.showMessageDialog(this, "Cliente eliminado exitosamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                    limpiarCampos();
+                    listarClientes();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Error al eliminar el cliente", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_btnEliminarActionPerformed
+    
+    class ButtonRenderer extends JButton implements TableCellRenderer {
+        public ButtonRenderer() {
+            setOpaque(true);
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                boolean isSelected, boolean hasFocus, int row, int column) {
+            setText((value == null) ? "Cargar" : value.toString());
+            return this;
+        }
+    }
+    
+    // Clase para manejar clics en el botón
+    class ButtonEditor extends DefaultCellEditor {
+        protected JButton button;
+        private String label;
+        private int selectedRow;
+
+        public ButtonEditor(JCheckBox checkBox) {
+            super(checkBox);
+            button = new JButton();
+            button.setOpaque(true);
+            button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    fireEditingStopped();
+                    cargarClienteDesdeFila(selectedRow);
+                }
+            });
+        }
+
+        @Override
+        public Component getTableCellEditorComponent(JTable table, Object value,
+                boolean isSelected, int row, int column) {
+            label = (value == null) ? "Cargar" : value.toString();
+            button.setText(label);
+            selectedRow = row;
+            return button;
+        }
+
+        @Override
+        public Object getCellEditorValue() {
+            return label;
+        }
+
+        @Override
+        public boolean stopCellEditing() {
+            return super.stopCellEditing();
+        }
+
+        @Override
+        protected void fireEditingStopped() {
+            super.fireEditingStopped();
+        }
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnEditar;
     private javax.swing.JButton btnEliminar;
@@ -219,7 +502,6 @@ public class ClientePanel extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextPane jTextPane1;
     private javax.swing.JLabel lblCedula;
     private javax.swing.JLabel lblDireccion;
     private javax.swing.JLabel lblEstado;
@@ -227,7 +509,8 @@ public class ClientePanel extends javax.swing.JPanel {
     private javax.swing.JLabel lblTelefono;
     private javax.swing.JLabel lblTelefono1;
     private javax.swing.JLabel lblTitulo;
-    private javax.swing.JTable tbCliente;
+    private javax.swing.JTable tbClientes;
+    private javax.swing.JTextPane tpDireccion;
     private javax.swing.JTextField txtCedula;
     private javax.swing.JTextField txtCorreoElectronico;
     private javax.swing.JTextField txtNombreCompleto;
