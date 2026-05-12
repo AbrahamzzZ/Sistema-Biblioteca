@@ -135,6 +135,8 @@ AS
 BEGIN
     INSERT INTO Cliente (NOMBRE_COMPLETO, CEDULA, TELEFONO, CORREO_ELECTRONICO, DIRECCION, ESTADO) 
     VALUES (@nombre_completo, @cedula, @telefono, @correo_electronico, @direccion, @estado);
+
+	SELECT SCOPE_IDENTITY() AS ID;
 END;
 GO
 
