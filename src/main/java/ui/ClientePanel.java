@@ -5,10 +5,10 @@
 package ui;
 
 import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.Image;
 import java.util.List;
 import javax.swing.DefaultCellEditor;
+import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -72,6 +72,17 @@ public class ClientePanel extends javax.swing.JPanel {
             // Configurar botón en la tabla
             tbClientes.getColumn("Acción").setCellRenderer(new ButtonRenderer());
             tbClientes.getColumn("Acción").setCellEditor(new ButtonEditor(new JCheckBox()));
+            tbClientes.getColumn("Estado").setCellRenderer(new EstadoCellRenderer());
+            tbClientes.getColumnModel().getColumn(0).setPreferredWidth(40);   // ID
+            tbClientes.getColumnModel().getColumn(1).setPreferredWidth(200);  // Nombre
+            tbClientes.getColumnModel().getColumn(2).setPreferredWidth(100);  // Cédula
+            tbClientes.getColumnModel().getColumn(3).setPreferredWidth(100);  // Teléfono
+            tbClientes.getColumnModel().getColumn(4).setPreferredWidth(180);  // Email
+            tbClientes.getColumnModel().getColumn(5).setPreferredWidth(250);  // Dirección
+            tbClientes.getColumnModel().getColumn(6).setPreferredWidth(80);   // Estado
+            tbClientes.getColumnModel().getColumn(7).setPreferredWidth(50);   // Acción
+            tbClientes.getColumn("Acción").setMinWidth(40);
+            tbClientes.getColumn("Acción").setMaxWidth(60);
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error al cargar clientes: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -193,6 +204,7 @@ public class ClientePanel extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tbClientes.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         jScrollPane1.setViewportView(tbClientes);
 
         btnEditar.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 12)); // NOI18N
@@ -269,32 +281,33 @@ public class ClientePanel extends javax.swing.JPanel {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(29, 29, 29)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblEstado)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(txtNombreCompleto, javax.swing.GroupLayout.DEFAULT_SIZE, 138, Short.MAX_VALUE)
-                        .addComponent(txtCedula)
-                        .addComponent(txtTelefono, javax.swing.GroupLayout.DEFAULT_SIZE, 138, Short.MAX_VALUE)
-                        .addComponent(txtCorreoElectronico, javax.swing.GroupLayout.DEFAULT_SIZE, 138, Short.MAX_VALUE)
-                        .addComponent(lblCedula)
-                        .addComponent(lblTelefono)
-                        .addComponent(lblTelefono1)
-                        .addComponent(lblNombreCompleto)
-                        .addComponent(lblDireccion)
-                        .addComponent(jScrollPane2))
-                    .addComponent(cmbEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+                .addGap(28, 28, 28)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(cmbEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(lblEstado)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtNombreCompleto, javax.swing.GroupLayout.DEFAULT_SIZE, 138, Short.MAX_VALUE)
+                            .addComponent(txtCedula)
+                            .addComponent(txtTelefono, javax.swing.GroupLayout.DEFAULT_SIZE, 138, Short.MAX_VALUE)
+                            .addComponent(txtCorreoElectronico, javax.swing.GroupLayout.DEFAULT_SIZE, 138, Short.MAX_VALUE)
+                            .addComponent(lblCedula)
+                            .addComponent(lblTelefono)
+                            .addComponent(lblTelefono1)
+                            .addComponent(lblNombreCompleto)
+                            .addComponent(lblDireccion)
+                            .addComponent(jScrollPane2))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(btnRegistrar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(62, 62, 62)
+                        .addGap(59, 59, 59)
                         .addComponent(btnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(45, 45, 45)
+                        .addGap(49, 49, 49)
                         .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 530, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 530, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(33, 33, 33))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
@@ -306,13 +319,16 @@ public class ClientePanel extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(25, 25, 25)
                 .addComponent(lblTitulo)
+                .addGap(37, 37, 37)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(37, 37, 37)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addGap(20, 20, 20))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(lblNombreCompleto)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtNombreCompleto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(lblCedula)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtCedula, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -327,20 +343,19 @@ public class ClientePanel extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lblDireccion)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(45, 45, 45)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblEstado)
-                .addGap(10, 10, 10)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnRegistrar)
-                    .addComponent(btnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cmbEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(36, 36, 36))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblEstado)
+                        .addGap(9, 9, 9)))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnRegistrar)
+                        .addComponent(btnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cmbEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(32, 32, 32))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -351,9 +366,7 @@ public class ClientePanel extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 461, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 442, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -437,14 +450,32 @@ public class ClientePanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnEliminarActionPerformed
     
     class ButtonRenderer extends JButton implements TableCellRenderer {
+        private ImageIcon iconoCargar;
+        private static final int ICON_SIZE = 16; 
+
         public ButtonRenderer() {
             setOpaque(true);
+            setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+            setBorder(javax.swing.BorderFactory.createEmptyBorder(2, 2, 2, 2));
+            cargarIcono();
+        }
+
+        private void cargarIcono() {
+            try {
+                ImageIcon iconoOriginal = new ImageIcon(getClass().getResource("/img/visto.png"));
+                Image img = iconoOriginal.getImage().getScaledInstance(ICON_SIZE, ICON_SIZE, java.awt.Image.SCALE_SMOOTH);
+                iconoCargar = new ImageIcon(img);
+                setIcon(iconoCargar);
+                setText("");
+            } catch (Exception e) {
+                setText("");
+                setFont(new java.awt.Font("Segoe UI Emoji", java.awt.Font.PLAIN, 12));
+            }
         }
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value,
                 boolean isSelected, boolean hasFocus, int row, int column) {
-            setText((value == null) ? "Cargar" : value.toString());
             return this;
         }
     }
@@ -452,44 +483,75 @@ public class ClientePanel extends javax.swing.JPanel {
     // Clase para manejar clics en el botón
     class ButtonEditor extends DefaultCellEditor {
         protected JButton button;
-        private String label;
         private int selectedRow;
+        private static final int ICON_SIZE = 16; 
+        private ImageIcon iconoCargar;
 
         public ButtonEditor(JCheckBox checkBox) {
             super(checkBox);
             button = new JButton();
             button.setOpaque(true);
-            button.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    fireEditingStopped();
-                    cargarClienteDesdeFila(selectedRow);
-                }
+            button.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+            button.setBorder(javax.swing.BorderFactory.createEmptyBorder(2, 2, 2, 2));
+
+            try {
+                ImageIcon iconoOriginal = new ImageIcon(getClass().getResource("/img/visto.png"));
+                Image img = iconoOriginal.getImage().getScaledInstance(ICON_SIZE, ICON_SIZE, java.awt.Image.SCALE_SMOOTH);
+                iconoCargar = new ImageIcon(img);
+                button.setIcon(iconoCargar);
+                button.setText("");
+            } catch (Exception e) {
+                button.setText("");
+                button.setFont(new java.awt.Font("Segoe UI Emoji", java.awt.Font.PLAIN, 12));
+            }
+
+            button.addActionListener(e -> {
+                fireEditingStopped();
+                cargarClienteDesdeFila(selectedRow);
             });
         }
 
         @Override
         public Component getTableCellEditorComponent(JTable table, Object value,
                 boolean isSelected, int row, int column) {
-            label = (value == null) ? "Cargar" : value.toString();
-            button.setText(label);
             selectedRow = row;
             return button;
         }
 
         @Override
         public Object getCellEditorValue() {
-            return label;
+            return "Cargar";
         }
-
+    }
+    
+    // Clase para renderizar la celda de estado con colores
+    class EstadoCellRenderer extends javax.swing.table.DefaultTableCellRenderer {
         @Override
-        public boolean stopCellEditing() {
-            return super.stopCellEditing();
-        }
+        public Component getTableCellRendererComponent(JTable table, Object value,
+            boolean isSelected, boolean hasFocus, int row, int column) {
 
-        @Override
-        protected void fireEditingStopped() {
-            super.fireEditingStopped();
+            Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+            if (value != null) {
+                String estado = value.toString();
+                if (estado.equals("Activo")) {
+                    c.setBackground(new java.awt.Color(144, 238, 144)); // Verde claro
+                    c.setForeground(new java.awt.Color(0, 100, 0));     // Verde oscuro
+                } else if (estado.equals("Inactivo")) {
+                    c.setBackground(new java.awt.Color(255, 182, 193)); // Rojo claro
+                    c.setForeground(new java.awt.Color(139, 0, 0));     // Rojo oscuro
+                } else {
+                    c.setBackground(java.awt.Color.WHITE);
+                    c.setForeground(java.awt.Color.BLACK);
+                }
+            }
+
+            if (isSelected) {
+                c.setBackground(table.getSelectionBackground());
+                c.setForeground(table.getSelectionForeground());
+            }
+
+            return c;
         }
     }
     

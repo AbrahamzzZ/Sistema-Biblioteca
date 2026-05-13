@@ -5,10 +5,12 @@
 package ui;
 
 import java.awt.Component;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 import javax.swing.DefaultCellEditor;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
@@ -76,6 +78,16 @@ public class LibroPanel extends javax.swing.JPanel {
             // Configurar el renderizador y editor para la columna de botones
             tbLibros.getColumn("Acción").setCellRenderer(new ButtonRenderer());
             tbLibros.getColumn("Acción").setCellEditor(new ButtonEditor(new JCheckBox()));
+            tbLibros.getColumn("Estado").setCellRenderer(new EstadoCellRenderer());
+            tbLibros.getColumnModel().getColumn(0).setPreferredWidth(40);   // ID
+            tbLibros.getColumnModel().getColumn(1).setPreferredWidth(200);  // Nombre
+            tbLibros.getColumnModel().getColumn(2).setPreferredWidth(100);  // Autor
+            tbLibros.getColumnModel().getColumn(3).setPreferredWidth(40);  // Año publicación
+            tbLibros.getColumnModel().getColumn(4).setPreferredWidth(180);  // Editorial
+            tbLibros.getColumnModel().getColumn(5).setPreferredWidth(80);   // Estado
+            tbLibros.getColumnModel().getColumn(6).setPreferredWidth(50);   // Acción
+            tbLibros.getColumn("Acción").setMinWidth(40);
+            tbLibros.getColumn("Acción").setMaxWidth(60);
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error al cargar libros: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -213,6 +225,7 @@ public class LibroPanel extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tbLibros.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         jScrollPane1.setViewportView(tbLibros);
 
         btnEditar.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 12)); // NOI18N
@@ -310,11 +323,11 @@ public class LibroPanel extends javax.swing.JPanel {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addComponent(btnRegistrar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(66, 66, 66)
+                        .addGap(57, 57, 57)
                         .addComponent(btnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(60, 60, 60)
+                        .addGap(62, 62, 62)
                         .addComponent(btnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(44, 44, 44)
+                        .addGap(51, 51, 51)
                         .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 530, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(33, 33, 33))
@@ -370,7 +383,7 @@ public class LibroPanel extends javax.swing.JPanel {
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 433, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 433, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -465,63 +478,107 @@ public class LibroPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
     class ButtonRenderer extends JButton implements TableCellRenderer {
+        private ImageIcon iconoCargar;
+        private static final int ICON_SIZE = 16; 
+
         public ButtonRenderer() {
             setOpaque(true);
+            setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+            setBorder(javax.swing.BorderFactory.createEmptyBorder(2, 2, 2, 2));
+            cargarIcono();
+        }
+
+        private void cargarIcono() {
+            try {
+                ImageIcon iconoOriginal = new ImageIcon(getClass().getResource("/img/visto.png"));
+                Image img = iconoOriginal.getImage().getScaledInstance(ICON_SIZE, ICON_SIZE, java.awt.Image.SCALE_SMOOTH);
+                iconoCargar = new ImageIcon(img);
+                setIcon(iconoCargar);
+                setText("");
+            } catch (Exception e) {
+                setText("");
+                setFont(new java.awt.Font("Segoe UI Emoji", java.awt.Font.PLAIN, 12));
+            }
         }
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value,
                 boolean isSelected, boolean hasFocus, int row, int column) {
-            setText((value == null) ? "Cargar" : value.toString());
             return this;
         }
     }
-
+    
     // Clase para manejar clics en el botón
     class ButtonEditor extends DefaultCellEditor {
         protected JButton button;
-        private String label;
-        private boolean isPushed;
         private int selectedRow;
+        private static final int ICON_SIZE = 16; 
+        private ImageIcon iconoCargar;
 
         public ButtonEditor(JCheckBox checkBox) {
             super(checkBox);
             button = new JButton();
             button.setOpaque(true);
-            button.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    fireEditingStopped();
-                    cargarLibroDesdeFila(selectedRow);
-                }
+            button.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+            button.setBorder(javax.swing.BorderFactory.createEmptyBorder(2, 2, 2, 2));
+
+            try {
+                ImageIcon iconoOriginal = new ImageIcon(getClass().getResource("/img/visto.png"));
+                Image img = iconoOriginal.getImage().getScaledInstance(ICON_SIZE, ICON_SIZE, java.awt.Image.SCALE_SMOOTH);
+                iconoCargar = new ImageIcon(img);
+                button.setIcon(iconoCargar);
+                button.setText("");
+            } catch (Exception e) {
+                button.setText("");
+                button.setFont(new java.awt.Font("Segoe UI Emoji", java.awt.Font.PLAIN, 12));
+            }
+
+            button.addActionListener(e -> {
+                fireEditingStopped();
+                cargarLibroDesdeFila(selectedRow);
             });
         }
 
         @Override
         public Component getTableCellEditorComponent(JTable table, Object value,
                 boolean isSelected, int row, int column) {
-            label = (value == null) ? "Cargar" : value.toString();
-            button.setText(label);
-            isPushed = true;
             selectedRow = row;
             return button;
         }
 
         @Override
         public Object getCellEditorValue() {
-            isPushed = false;
-            return label;
+            return "Cargar";
         }
-
+    }
+    
+    // Clase para renderizar la celda de estado con colores
+    class EstadoCellRenderer extends javax.swing.table.DefaultTableCellRenderer {
         @Override
-        public boolean stopCellEditing() {
-            isPushed = false;
-            return super.stopCellEditing();
-        }
+        public Component getTableCellRendererComponent(JTable table, Object value,
+            boolean isSelected, boolean hasFocus, int row, int column) {
+            Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
-        @Override
-        protected void fireEditingStopped() {
-            super.fireEditingStopped();
+            if (value != null) {
+                String estado = value.toString();
+                if (estado.equals("Activo")) {
+                    c.setBackground(new java.awt.Color(144, 238, 144)); // Verde claro
+                    c.setForeground(new java.awt.Color(0, 100, 0));     // Verde oscuro
+                } else if (estado.equals("Inactivo")) {
+                    c.setBackground(new java.awt.Color(255, 182, 193)); // Rojo claro
+                    c.setForeground(new java.awt.Color(139, 0, 0));     // Rojo oscuro
+                } else {
+                    c.setBackground(java.awt.Color.WHITE);
+                    c.setForeground(java.awt.Color.BLACK);
+                }
+            }
+
+            if (isSelected) {
+                c.setBackground(table.getSelectionBackground());
+                c.setForeground(table.getSelectionForeground());
+            }
+
+            return c;
         }
     }
 
