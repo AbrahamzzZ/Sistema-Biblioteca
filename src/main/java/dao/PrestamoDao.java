@@ -96,29 +96,26 @@ public class PrestamoDao {
         // Convertir lista a string separado por comas: "1,2,3"
         String librosStr = librosIds.toString().replace("[", "").replace("]", "").replace(" ", "");
         String sql = "{call PA_REGISTRAR_PRESTAMO(?, ?, ?)}";
-        
+
         try (Connection conn = Conexion.getConnection();
              CallableStatement stmt = conn.prepareCall(sql)) {
-            
+
             stmt.setInt(1, idCliente);
             stmt.setDate(2, new java.sql.Date(fechaDevolucionEsperada.getTime()));
             stmt.setString(3, librosStr);
-            
+
+            // Ejecutar y obtener el resultado
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                String mensaje = rs.getString("Mensaje");
-                if (mensaje.contains("ERROR")) {
-                    System.err.println(mensaje);
-                    return -1;
-                }
-                return rs.getInt("ID_Prestamo");
+                return rs.getInt(1);
             }
         } catch (SQLException e) {
             System.err.println("Error al registrar préstamo: " + e.getMessage());
+            e.printStackTrace();
         }
         return -1;
     }
-    
+
     // REGISTRAR devolución de libros
     public boolean registrarDevolucion(int idPrestamo, List<Integer> librosIds) {
         String librosStr = librosIds.toString().replace("[", "").replace("]", "").replace(" ", "");

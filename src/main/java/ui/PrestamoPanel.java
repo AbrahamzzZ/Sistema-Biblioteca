@@ -10,6 +10,7 @@ import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import model.Cliente;
 import model.Libro;
@@ -75,6 +76,9 @@ public class PrestamoPanel extends javax.swing.JPanel {
         modeloTablaSeleccionados = new DefaultTableModel();
         modeloTablaSeleccionados.setColumnIdentifiers(new String[]{"ID", "Título", "Autor"});
         tbPrestamos.setModel(modeloTablaSeleccionados);
+        tbPrestamos.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+        tbPrestamos.getTableHeader().setReorderingAllowed(false);
+        ajustarAnchoColumnas();
     }
     
     private int obtenerIdDesdeComboBox(JComboBox<String> comboBox) {
@@ -180,7 +184,6 @@ public class PrestamoPanel extends javax.swing.JPanel {
         jpPrincipal = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tbPrestamos = new javax.swing.JTable();
-        btnEditar = new javax.swing.JButton();
         btnRegistrar = new javax.swing.JButton();
         btnLimpiar = new javax.swing.JButton();
         lblTitulo1 = new javax.swing.JLabel();
@@ -215,10 +218,6 @@ public class PrestamoPanel extends javax.swing.JPanel {
         ));
         tbPrestamos.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         jScrollPane2.setViewportView(tbPrestamos);
-
-        btnEditar.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 12)); // NOI18N
-        btnEditar.setText("Editar");
-        btnEditar.setPreferredSize(new java.awt.Dimension(65, 23));
 
         btnRegistrar.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 12)); // NOI18N
         btnRegistrar.setText("Registrar");
@@ -288,35 +287,33 @@ public class PrestamoPanel extends javax.swing.JPanel {
                 .addGap(29, 29, 29)
                 .addGroup(jpPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpPrincipalLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGap(0, 237, Short.MAX_VALUE)
                         .addComponent(lblTitulo1)
                         .addGap(277, 277, 277))
                     .addGroup(jpPrincipalLayout.createSequentialGroup()
-                        .addGroup(jpPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jpPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(lblFechaDevolucion1)
                             .addComponent(lblCliente1)
                             .addComponent(lblLibro1)
-                            .addComponent(cmbLibro, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(dpFechaDevolucion, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(dpFechaPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cmbCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lblFechaPrestamo1)
                             .addComponent(lblEstado1)
-                            .addComponent(cmbEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(24, 24, 24)
+                            .addComponent(cmbLibro, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cmbCliente, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(dpFechaPrestamo, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
+                            .addComponent(dpFechaDevolucion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cmbEstado, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(29, 29, 29)
                         .addGroup(jpPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 530, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jpPrincipalLayout.createSequentialGroup()
                                 .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
+                                .addGap(36, 36, 36)
                                 .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(34, 34, 34)
                                 .addComponent(btnRegistrar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap(29, Short.MAX_VALUE))))
+                                .addGap(44, 44, 44)
+                                .addComponent(btnLimpiar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 464, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jpPrincipalLayout.setVerticalGroup(
             jpPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -348,11 +345,10 @@ public class PrestamoPanel extends javax.swing.JPanel {
                 .addGroup(jpPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cmbEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnRegistrar)
-                    .addComponent(btnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnAgregar)
-                    .addComponent(btnEliminar))
-                .addContainerGap(81, Short.MAX_VALUE))
+                    .addComponent(btnEliminar)
+                    .addComponent(btnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(102, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -361,13 +357,13 @@ public class PrestamoPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 751, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(jpPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, 751, Short.MAX_VALUE))
+                .addComponent(jpPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 435, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(jpPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, 435, Short.MAX_VALUE))
+                .addComponent(jpPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -376,7 +372,61 @@ public class PrestamoPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
-        // TODO add your handling code here:
+        if (!validarCampos()) return;
+        int idCliente = obtenerIdDesdeComboBox(cmbCliente);
+        if (idCliente == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione un cliente", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        List<Integer> librosIds = new ArrayList<>();
+        for (Libro libro : librosSeleccionados) {
+            librosIds.add(libro.getId());
+        }
+
+        if (librosIds.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Agregue al menos un libro", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Date fechaPrestamo = dpFechaPrestamo.getDate();
+        Date fechaDevolucion = dpFechaDevolucion.getDate();
+
+        if (fechaPrestamo == null || fechaDevolucion == null) {
+            JOptionPane.showMessageDialog(this, "Seleccione las fechas", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        long diff = fechaDevolucion.getTime() - fechaPrestamo.getTime();
+        int diasPrestamo = (int) (diff / (1000 * 60 * 60 * 24));
+
+        if (diasPrestamo <= 0) {
+            JOptionPane.showMessageDialog(this, "La fecha de devolución debe ser posterior", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (diasPrestamo > 30) {
+            JOptionPane.showMessageDialog(this, "El préstamo no puede exceder los 30 días", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try {
+            int idPrestamo = prestamoService.registrarPrestamo(idCliente, diasPrestamo, librosIds);
+
+            if (idPrestamo > 0) {
+                JOptionPane.showMessageDialog(this, 
+                    "Préstamo registrado exitosamente con ID: " + idPrestamo,
+                    "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                limpiarCampos();
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al registrar el préstamo", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error de validación", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error inesperado: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
     }//GEN-LAST:event_btnRegistrarActionPerformed
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
@@ -387,10 +437,28 @@ public class PrestamoPanel extends javax.swing.JPanel {
         quitarLibroDeLista();
     }//GEN-LAST:event_btnEliminarActionPerformed
 
+    private void ajustarAnchoColumnas() {
+        int anchoTotal = tbPrestamos.getWidth();
+
+        if (anchoTotal <= 0) {
+            anchoTotal = 460; // Ancho aproximado del scrollPane
+        }
+
+        int anchoId = (int) (anchoTotal * 0.10);
+        int anchoTitulo = (int) (anchoTotal * 0.60);
+        int anchoAutor = anchoTotal - anchoId - anchoTitulo - 10;
+
+        if (anchoId < 40) anchoId = 40;
+        if (anchoTitulo < 200) anchoTitulo = 200;
+        if (anchoAutor < 100) anchoAutor = 100;
+
+        tbPrestamos.getColumnModel().getColumn(0).setPreferredWidth(anchoId);
+        tbPrestamos.getColumnModel().getColumn(1).setPreferredWidth(anchoTitulo);
+        tbPrestamos.getColumnModel().getColumn(2).setPreferredWidth(anchoAutor);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAgregar;
-    private javax.swing.JButton btnEditar;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JButton btnRegistrar;
