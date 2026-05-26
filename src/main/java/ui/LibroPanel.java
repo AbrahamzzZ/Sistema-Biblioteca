@@ -389,19 +389,82 @@ public class LibroPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
-        // TODO add your handling code here:
+        limpiarCampos();
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        // TODO add your handling code here:
+        if (selectedId == -1) {
+            JOptionPane.showMessageDialog(this, "Primero cargue un libro desde la tabla", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        String titulo = txtNombre.getText().trim();
+
+        int confirm = JOptionPane.showConfirmDialog(this,
+            "¿Está seguro de eliminar el libro '" + titulo + "'?",
+            "Confirmar eliminación",
+            JOptionPane.YES_NO_OPTION);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            try {
+                if (libroService.eliminarLibro(selectedId)) {
+                    JOptionPane.showMessageDialog(this, "Libro eliminado exitosamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                    limpiarCampos();
+                    listarLibros();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Error al eliminar el libro", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
-        // TODO add your handling code here:
+       if (selectedId != -1) {
+            JOptionPane.showMessageDialog(this, "Para modificar un libro use el botón 'Editar'.\nO limpie los campos para registrar uno nuevo.", "Información", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        if (!validarCampos()) return;
+
+        try {
+            Libro libro = obtenerLibroDesdeCampos();
+            int id = libroService.registrarLibro(libro);
+
+            if (id > 0) {
+                JOptionPane.showMessageDialog(this, "Libro registrado exitosamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                limpiarCampos();
+                listarLibros();
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al registrar el libro", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error de validación", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnRegistrarActionPerformed
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
-        // TODO add your handling code here:
+      if (selectedId == -1) {
+            JOptionPane.showMessageDialog(this, "Primero cargue un libro desde la tabla", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if (!validarCampos()) return;
+
+        try {
+            Libro libro = obtenerLibroDesdeCampos();
+
+            if (libroService.editarLibro(libro)) {
+                JOptionPane.showMessageDialog(this, "Libro actualizado exitosamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                limpiarCampos();
+                listarLibros();
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al actualizar el libro", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error de validación", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnEditarActionPerformed
 
     class ButtonRenderer extends JButton implements TableCellRenderer {
