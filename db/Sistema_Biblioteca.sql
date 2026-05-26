@@ -280,6 +280,8 @@ BEGIN
         IF @disponibles <= 0
         BEGIN
             ROLLBACK TRANSACTION;
+            -- Retornar -1 para indicar error
+            SELECT -1 AS ID_Prestamo;
             RETURN;
         END
         
@@ -297,6 +299,9 @@ BEGIN
     DEALLOCATE cursor_libros;
     
     COMMIT TRANSACTION;
+    
+    -- Retornar el ID del préstamo creado
+    SELECT @id_prestamo AS ID_Prestamo;
 END;
 GO
 
