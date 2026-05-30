@@ -4,18 +4,36 @@
  */
 package ui;
 
+import java.util.Date;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import model.DetallePrestamo;
+import model.Prestamo;
+import services.PrestamoService;
+
 /**
  *
  * @author herma
  */
 public class EditarPrestamoDialog extends javax.swing.JDialog {
+    
+    private PrestamoService prestamoService;
+    private Prestamo prestamo;
+    private boolean actualizado = false;
 
     /**
-     * Creates new form EditarPrestamoDialog
+     * Constructor con los parámetros necesarios
+     * @param parent Ventana padre
+     * @param modal Si es modal
+     * @param prestamo El préstamo a editar
      */
-    public EditarPrestamoDialog(java.awt.Frame parent, boolean modal) {
+    public EditarPrestamoDialog(java.awt.Frame parent, boolean modal, model.Prestamo prestamo) {
         super(parent, modal);
         initComponents();
+        this.prestamo = prestamo;
+        this.prestamoService = new PrestamoService();
+        setLocationRelativeTo(parent);
+        cargarDatos();
     }
 
     /**
@@ -37,6 +55,9 @@ public class EditarPrestamoDialog extends javax.swing.JDialog {
         lblFechaPrestamo = new javax.swing.JLabel();
         lblListaLibros2 = new javax.swing.JLabel();
         txtFechaPrestamo = new javax.swing.JTextField();
+        dtFechaPrestamo = new com.toedter.calendar.JDateChooser();
+        btnGuardar = new javax.swing.JButton();
+        btnSalir = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -75,6 +96,26 @@ public class EditarPrestamoDialog extends javax.swing.JDialog {
 
         txtFechaPrestamo.setFont(new java.awt.Font("Microsoft Sans Serif", 0, 12)); // NOI18N
 
+        btnGuardar.setBackground(new java.awt.Color(245, 222, 179));
+        btnGuardar.setFont(new java.awt.Font("Microsoft Sans Serif", 0, 12)); // NOI18N
+        btnGuardar.setText("Guardar");
+        btnGuardar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnGuardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGuardarActionPerformed(evt);
+            }
+        });
+
+        btnSalir.setBackground(new java.awt.Color(245, 222, 179));
+        btnSalir.setFont(new java.awt.Font("Microsoft Sans Serif", 0, 12)); // NOI18N
+        btnSalir.setText("Salir");
+        btnSalir.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnSalir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSalirActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jpPrincipalLayout = new javax.swing.GroupLayout(jpPrincipal);
         jpPrincipal.setLayout(jpPrincipalLayout);
         jpPrincipalLayout.setHorizontalGroup(
@@ -86,18 +127,30 @@ public class EditarPrestamoDialog extends javax.swing.JDialog {
             .addGroup(jpPrincipalLayout.createSequentialGroup()
                 .addGap(19, 19, 19)
                 .addGroup(jpPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblListaLibros2)
                     .addGroup(jpPrincipalLayout.createSequentialGroup()
-                        .addComponent(lblFechaPrestamo)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtFechaPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jpPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jpPrincipalLayout.createSequentialGroup()
+                                .addComponent(lblNombreCliente)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtNombreCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(lblListaLibros)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 363, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(18, Short.MAX_VALUE))
                     .addGroup(jpPrincipalLayout.createSequentialGroup()
-                        .addComponent(lblNombreCliente)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtNombreCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(lblListaLibros)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 363, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(18, Short.MAX_VALUE))
+                        .addGroup(jpPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(jpPrincipalLayout.createSequentialGroup()
+                                .addComponent(lblFechaPrestamo)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtFechaPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jpPrincipalLayout.createSequentialGroup()
+                                .addGroup(jpPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(lblListaLibros2)
+                                    .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(dtFechaPrestamo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(29, 29, 29))))
         );
         jpPrincipalLayout.setVerticalGroup(
             jpPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -110,15 +163,25 @@ public class EditarPrestamoDialog extends javax.swing.JDialog {
                     .addComponent(txtNombreCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(lblListaLibros)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(jpPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblFechaPrestamo)
-                    .addComponent(txtFechaPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(35, 35, 35)
-                .addComponent(lblListaLibros2)
-                .addContainerGap(100, Short.MAX_VALUE))
+                .addGroup(jpPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jpPrincipalLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(jpPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblFechaPrestamo)
+                            .addComponent(txtFechaPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(35, 35, 35)
+                        .addGroup(jpPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblListaLibros2)
+                            .addComponent(dtFechaPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(27, 91, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpPrincipalLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jpPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(19, 19, 19))))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -135,49 +198,98 @@ public class EditarPrestamoDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(EditarPrestamoDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(EditarPrestamoDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(EditarPrestamoDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(EditarPrestamoDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
 
-        /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                EditarPrestamoDialog dialog = new EditarPrestamoDialog(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
+    }//GEN-LAST:event_btnGuardarActionPerformed
+
+    private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
+
+    }//GEN-LAST:event_btnSalirActionPerformed
+    
+    private void cargarDatos() {
+        // Cargar datos del cliente
+        txtNombreCliente.setText(prestamo.getNombreCliente());
+        txtFechaPrestamo.setText(prestamo.getFechaPrestamo().toString());
+        dtFechaPrestamo.setDate(prestamo.getFechaDevolucionEsperada());
+        
+        // Configurar tabla de libros prestados
+        DefaultTableModel model = new DefaultTableModel();
+        model.setColumnIdentifiers(new String[]{"ID", "Título", "Autor", "Estado"});
+        tbLibrosPrestados.setModel(model);
+        
+        if (prestamo.getDetalles() != null) {
+            for (DetallePrestamo detalle : prestamo.getDetalles()) {
+                model.addRow(new Object[]{
+                    detalle.getIdLibro(),
+                    detalle.getTituloLibro(),
+                    "", // Autor no viene en detalle, puedes omitirlo o consultarlo
+                    detalle.getEstadoLibro()
                 });
-                dialog.setVisible(true);
             }
-        });
+        }
+        
+        // Ajustar ancho de columnas
+        tbLibrosPrestados.getColumnModel().getColumn(0).setPreferredWidth(50);
+        tbLibrosPrestados.getColumnModel().getColumn(1).setPreferredWidth(250);
+        tbLibrosPrestados.getColumnModel().getColumn(2).setPreferredWidth(150);
+        tbLibrosPrestados.getColumnModel().getColumn(3).setPreferredWidth(80);
+    }
+    
+    private boolean validarFecha() {
+        Date nuevaFecha = dtFechaPrestamo.getDate();
+        if (nuevaFecha == null) {
+            JOptionPane.showMessageDialog(this, "Seleccione una fecha válida");
+            return false;
+        }
+        if (nuevaFecha.before(new Date())) {
+            JOptionPane.showMessageDialog(this, "La fecha no puede ser anterior a hoy");
+            return false;
+        }
+        return true;
+    }
+    
+    private void guardarCambios() {
+        if (!validarFecha()) return;
+        
+        Date nuevaFecha = dtFechaPrestamo.getDate();
+        
+        int confirm = JOptionPane.showConfirmDialog(this,
+            "¿Actualizar fecha de devolución a " + nuevaFecha + "?",
+            "Confirmar",
+            JOptionPane.YES_NO_OPTION);
+        
+        if (confirm == JOptionPane.YES_OPTION) {
+            try {
+                boolean exito = prestamoService.actualizarFechaDevolucion(
+                    prestamo.getId(), nuevaFecha);
+                
+                if (exito) {
+                    JOptionPane.showMessageDialog(this, 
+                        "Fecha actualizada exitosamente",
+                        "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                    actualizado = true;
+                    dispose();
+                } else {
+                    JOptionPane.showMessageDialog(this, 
+                        "Error al actualizar la fecha",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, 
+                    "Error: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+    
+    public boolean isActualizado() {
+        return actualizado;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnGuardar;
+    private javax.swing.JButton btnSalir;
+    private com.toedter.calendar.JDateChooser dtFechaPrestamo;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel jpPrincipal;
     private javax.swing.JLabel lblFechaPrestamo;
