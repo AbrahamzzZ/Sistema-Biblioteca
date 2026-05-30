@@ -4,11 +4,8 @@
  */
 package ui;
 
-import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 
 /**
  *
@@ -16,15 +13,12 @@ import javax.swing.JPanel;
  */
 public class HomeFrame extends javax.swing.JFrame {
     
-    // CardLayout para cambiar entre paneles
-    private CardLayout cardLayout;
-    private JPanel panelContenedor;
-    
     // Paneles de cada módulo
+    private CardLayout cardLayout;
+    private DashboardPanel dashboardPanel;
     private ClientePanel clientePanel;
     private LibroPanel libroPanel;
     private PrestamoPanel prestamoPanel;
-    private JPanel panelBienvenida;
 
     /**
      * Creates new form HomeFrame
@@ -32,37 +26,25 @@ public class HomeFrame extends javax.swing.JFrame {
     public HomeFrame() {
         initComponents();
         setLocationRelativeTo(null); 
-        setTitle("Sistema de Biblioteca - Dashboard");
+        setTitle("Sistema de Biblioteca");
         setResizable(false);
         inicializarPaneles();
     }
     
     private void inicializarPaneles() {
-        // Crear el CardLayout y el panel contenedor
         cardLayout = new CardLayout();
         pnPrincipal.setLayout(cardLayout);
         
-        // Crear los paneles
+        dashboardPanel = new DashboardPanel();
         clientePanel = new ClientePanel();
         libroPanel = new LibroPanel();
         prestamoPanel = new PrestamoPanel();
         
-        // Panel de bienvenida
-        panelBienvenida = new JPanel();
-        panelBienvenida.add(new javax.swing.JLabel("Bienvenido al Sistema de Biblioteca"));
-        
-        // Agregar al contenedor con nombres
-        pnPrincipal.add(panelBienvenida, "BIENVENIDA");
+        pnPrincipal.add(dashboardPanel, "DASHBOARD");
         pnPrincipal.add(clientePanel, "CLIENTES");
         pnPrincipal.add(libroPanel, "LIBROS");
         pnPrincipal.add(prestamoPanel, "PRESTAMOS");
-        
-        // Mostrar bienvenida al inicio
-        cardLayout.show(pnPrincipal, "BIENVENIDA");
-        
-        // Revalidar y repintar
-        revalidate();
-        repaint();
+        cardLayout.show(pnPrincipal, "DASHBOARD");
     }
     
     // Métodos para abrir paneles
@@ -76,6 +58,10 @@ public class HomeFrame extends javax.swing.JFrame {
     
     private void abrirPrestamos() {
         cardLayout.show(pnPrincipal, "PRESTAMOS");
+    }
+    
+    private void abrirDashboard(){
+        cardLayout.show(pnPrincipal, "DASHBOARD");
     }
     
     private void cerrarSesion() {
@@ -100,6 +86,8 @@ public class HomeFrame extends javax.swing.JFrame {
 
         pnPrincipal = new javax.swing.JPanel();
         mnPrincipal = new javax.swing.JMenuBar();
+        mnInicio = new javax.swing.JMenu();
+        mniDashboard = new javax.swing.JMenuItem();
         mnCliente = new javax.swing.JMenu();
         mniClientes = new javax.swing.JMenuItem();
         mnLibro = new javax.swing.JMenu();
@@ -123,6 +111,19 @@ public class HomeFrame extends javax.swing.JFrame {
         );
 
         mnPrincipal.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        mnInicio.setText("Inicio");
+        mnInicio.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 12)); // NOI18N
+
+        mniDashboard.setText("Ver Dashboard");
+        mniDashboard.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mniDashboardActionPerformed(evt);
+            }
+        });
+        mnInicio.add(mniDashboard);
+
+        mnPrincipal.add(mnInicio);
 
         mnCliente.setText("Cliente");
         mnCliente.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -211,13 +212,19 @@ public class HomeFrame extends javax.swing.JFrame {
         cerrarSesion();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
+    private void mniDashboardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniDashboardActionPerformed
+       abrirDashboard();
+    }//GEN-LAST:event_mniDashboardActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenu mnCliente;
+    private javax.swing.JMenu mnInicio;
     private javax.swing.JMenu mnLibro;
     private javax.swing.JMenu mnPrestamo;
     private javax.swing.JMenuBar mnPrincipal;
     private javax.swing.JMenuItem mniClientes;
+    private javax.swing.JMenuItem mniDashboard;
     private javax.swing.JMenuItem mniLibro;
     private javax.swing.JMenuItem mniPrestamo;
     private javax.swing.JMenu mniSalir;
