@@ -17,6 +17,7 @@ public class LoginFrame extends javax.swing.JFrame {
 
     private UsuarioService usuarioService;
     private boolean claveVisible = false;
+    private Usuario usuarioActual;
     
     /**
      * Creates new form LoginFrame
@@ -26,6 +27,11 @@ public class LoginFrame extends javax.swing.JFrame {
         setLocationRelativeTo(null); 
         setResizable(false);
         usuarioService = new UsuarioService();
+    }
+    
+    public LoginFrame(Usuario usuario) {
+        this();  // Llama al constructor vacío
+        this.usuarioActual = usuario;
     }
 
     /**
@@ -56,12 +62,6 @@ public class LoginFrame extends javax.swing.JFrame {
         lblIniciarSesion.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 18)); // NOI18N
         lblIniciarSesion.setForeground(new java.awt.Color(0, 0, 0));
         lblIniciarSesion.setText("Iniciar Sesión");
-
-        txtCorreoElectronico.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtCorreoElectronicoActionPerformed(evt);
-            }
-        });
 
         lblClave.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 12)); // NOI18N
         lblClave.setForeground(new java.awt.Color(0, 0, 0));
@@ -187,7 +187,7 @@ public class LoginFrame extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Bienvenido " + usuario.getNombreCompleto(), "Login exitoso", JOptionPane.INFORMATION_MESSAGE);
 
             // Abrir la ventana Home (Dashboard)
-            HomeFrame homeFrame = new HomeFrame();
+            HomeFrame homeFrame = new HomeFrame(usuario);
             homeFrame.setVisible(true);
 
             // Cerrar la ventana de login
@@ -222,13 +222,6 @@ public class LoginFrame extends javax.swing.JFrame {
         System.exit(0);
     }//GEN-LAST:event_btnSalirActionPerformed
 
-    private void txtCorreoElectronicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCorreoElectronicoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtCorreoElectronicoActionPerformed
-
-    /**
-     * @param args the command line arguments
-     */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnIngresar;

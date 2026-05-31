@@ -6,6 +6,7 @@ package ui;
 
 import java.awt.CardLayout;
 import javax.swing.JOptionPane;
+import model.Usuario;
 
 /**
  *
@@ -19,11 +20,13 @@ public class HomeFrame extends javax.swing.JFrame {
     private ClientePanel clientePanel;
     private LibroPanel libroPanel;
     private PrestamoPanel prestamoPanel;
+    private Usuario usuarioActual;
 
     /**
      * Creates new form HomeFrame
      */
-    public HomeFrame() {
+    public HomeFrame(Usuario usuario) {
+        this.usuarioActual = usuario;
         initComponents();
         setLocationRelativeTo(null); 
         setTitle("Sistema de Biblioteca");
@@ -39,6 +42,7 @@ public class HomeFrame extends javax.swing.JFrame {
         clientePanel = new ClientePanel();
         libroPanel = new LibroPanel();
         prestamoPanel = new PrestamoPanel();
+        dashboardPanel.setUsuario(usuarioActual);
         
         pnPrincipal.add(dashboardPanel, "DASHBOARD");
         pnPrincipal.add(clientePanel, "CLIENTES");

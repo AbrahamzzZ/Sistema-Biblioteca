@@ -199,11 +199,11 @@ public class EditarPrestamoDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-
+        guardarCambios();
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
-
+        dispose();
     }//GEN-LAST:event_btnSalirActionPerformed
     
     private void cargarDatos() {
@@ -250,25 +250,25 @@ public class EditarPrestamoDialog extends javax.swing.JDialog {
     
     private void guardarCambios() {
         if (!validarFecha()) return;
-        
+
         Date nuevaFecha = dtFechaPrestamo.getDate();
-        
+
         int confirm = JOptionPane.showConfirmDialog(this,
             "¿Actualizar fecha de devolución a " + nuevaFecha + "?",
             "Confirmar",
             JOptionPane.YES_NO_OPTION);
-        
+
         if (confirm == JOptionPane.YES_OPTION) {
             try {
                 boolean exito = prestamoService.actualizarFechaDevolucion(
                     prestamo.getId(), nuevaFecha);
-                
+
                 if (exito) {
                     JOptionPane.showMessageDialog(this, 
                         "Fecha actualizada exitosamente",
                         "Éxito", JOptionPane.INFORMATION_MESSAGE);
                     actualizado = true;
-                    dispose();
+                    dispose();  // Cierra el diálogo después de guardar
                 } else {
                     JOptionPane.showMessageDialog(this, 
                         "Error al actualizar la fecha",
