@@ -7,6 +7,7 @@ package ui;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import model.Prestamo;
+import model.Usuario;
 import services.PrestamoService;
 
 /**
@@ -17,6 +18,7 @@ public class DashboardPanel extends javax.swing.JPanel {
 
     private PrestamoService prestamoService;
     private DefaultTableModel modeloTabla;
+    private Usuario usuarioActual;
     
     /**
      * Creates new form DashboarPanel
@@ -137,6 +139,12 @@ public class DashboardPanel extends javax.swing.JPanel {
             return label;
         }
     }
+    
+    // Método para establecer el usuario logueado
+    public void setUsuario(Usuario usuario) {
+        this.usuarioActual = usuario;
+        lblUsuario.setText(usuario.getNombreCompleto());
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -152,6 +160,7 @@ public class DashboardPanel extends javax.swing.JPanel {
         jScrollPane2 = new javax.swing.JScrollPane();
         tbPrestamos = new javax.swing.JTable();
         lblTitulo = new javax.swing.JLabel();
+        lblUsuario = new javax.swing.JLabel();
 
         jPasswordField1.setText("jPasswordField1");
 
@@ -177,28 +186,33 @@ public class DashboardPanel extends javax.swing.JPanel {
         lblTitulo.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 24)); // NOI18N
         lblTitulo.setText("Bienvenido");
 
+        lblUsuario.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 12)); // NOI18N
+
         javax.swing.GroupLayout jpPrincipalLayout = new javax.swing.GroupLayout(jpPrincipal);
         jpPrincipal.setLayout(jpPrincipalLayout);
         jpPrincipalLayout.setHorizontalGroup(
             jpPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jpPrincipalLayout.createSequentialGroup()
                 .addGap(0, 46, Short.MAX_VALUE)
-                .addGroup(jpPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpPrincipalLayout.createSequentialGroup()
-                        .addComponent(lblTitulo)
-                        .addGap(277, 277, 277))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpPrincipalLayout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 674, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(37, 37, 37))))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 674, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(37, 37, 37))
+            .addGroup(jpPrincipalLayout.createSequentialGroup()
+                .addGap(268, 268, 268)
+                .addComponent(lblTitulo)
+                .addGap(18, 18, 18)
+                .addComponent(lblUsuario)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jpPrincipalLayout.setVerticalGroup(
             jpPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jpPrincipalLayout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addComponent(lblTitulo)
-                .addGap(59, 59, 59)
+                .addGap(30, 30, 30)
+                .addGroup(jpPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblTitulo)
+                    .addComponent(lblUsuario))
+                .addGap(54, 54, 54)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(88, Short.MAX_VALUE))
+                .addContainerGap(94, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -209,7 +223,7 @@ public class DashboardPanel extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jpPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE)
+            .addComponent(jpPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -219,6 +233,7 @@ public class DashboardPanel extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPanel jpPrincipal;
     private javax.swing.JLabel lblTitulo;
+    private javax.swing.JLabel lblUsuario;
     private javax.swing.JTable tbPrestamos;
     // End of variables declaration//GEN-END:variables
 }
