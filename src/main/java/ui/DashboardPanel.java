@@ -186,7 +186,7 @@ public class DashboardPanel extends javax.swing.JPanel {
         lblTitulo.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 24)); // NOI18N
         lblTitulo.setText("Bienvenido");
 
-        lblUsuario.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 12)); // NOI18N
+        lblUsuario.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 24)); // NOI18N
 
         javax.swing.GroupLayout jpPrincipalLayout = new javax.swing.GroupLayout(jpPrincipal);
         jpPrincipal.setLayout(jpPrincipalLayout);
