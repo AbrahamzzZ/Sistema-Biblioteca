@@ -114,7 +114,7 @@
         <Component class="javax.swing.JLabel" name="lblUsuario">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Microsoft Sans Serif" size="12" style="1"/>
+              <Font name="Microsoft Sans Serif" size="24" style="1"/>
             </Property>
           </Properties>
         </Component>

@@ -10,6 +10,7 @@ import javax.swing.table.DefaultTableModel;
 import model.DetallePrestamo;
 import model.Prestamo;
 import services.PrestamoService;
+import java.text.SimpleDateFormat;
 
 /**
  *
@@ -207,14 +208,24 @@ public class EditarPrestamoDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnSalirActionPerformed
     
     private void cargarDatos() {
+        // Crear formateador de fechas
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        
         // Cargar datos del cliente
         txtNombreCliente.setText(prestamo.getNombreCliente());
-        txtFechaPrestamo.setText(prestamo.getFechaPrestamo().toString());
+        txtNombreCliente.setEditable(false);
+        txtNombreCliente.setBackground(new java.awt.Color(240, 240, 240));
+        
+        String fechaPrestamoStr = sdf.format(prestamo.getFechaPrestamo());
+        txtFechaPrestamo.setText(fechaPrestamoStr);
+        txtFechaPrestamo.setEditable(false);
+        txtFechaPrestamo.setBackground(new java.awt.Color(240, 240, 240)); 
+    
         dtFechaPrestamo.setDate(prestamo.getFechaDevolucionEsperada());
         
         // Configurar tabla de libros prestados
         DefaultTableModel model = new DefaultTableModel();
-        model.setColumnIdentifiers(new String[]{"ID", "Título", "Autor", "Estado"});
+        model.setColumnIdentifiers(new String[]{"ID", "Título", "Estado"});
         tbLibrosPrestados.setModel(model);
         
         if (prestamo.getDetalles() != null) {
@@ -222,7 +233,6 @@ public class EditarPrestamoDialog extends javax.swing.JDialog {
                 model.addRow(new Object[]{
                     detalle.getIdLibro(),
                     detalle.getTituloLibro(),
-                    "", // Autor no viene en detalle, puedes omitirlo o consultarlo
                     detalle.getEstadoLibro()
                 });
             }
@@ -230,9 +240,8 @@ public class EditarPrestamoDialog extends javax.swing.JDialog {
         
         // Ajustar ancho de columnas
         tbLibrosPrestados.getColumnModel().getColumn(0).setPreferredWidth(50);
-        tbLibrosPrestados.getColumnModel().getColumn(1).setPreferredWidth(250);
-        tbLibrosPrestados.getColumnModel().getColumn(2).setPreferredWidth(150);
-        tbLibrosPrestados.getColumnModel().getColumn(3).setPreferredWidth(80);
+        tbLibrosPrestados.getColumnModel().getColumn(1).setPreferredWidth(150);
+        tbLibrosPrestados.getColumnModel().getColumn(2).setPreferredWidth(80);
     }
     
     private boolean validarFecha() {
@@ -241,8 +250,12 @@ public class EditarPrestamoDialog extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "Seleccione una fecha válida");
             return false;
         }
+        
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        String fechaHoy = sdf.format(new Date());
+    
         if (nuevaFecha.before(new Date())) {
-            JOptionPane.showMessageDialog(this, "La fecha no puede ser anterior a hoy");
+            JOptionPane.showMessageDialog(this, "La fecha no puede ser anterior a hoy (" + fechaHoy + ")");
             return false;
         }
         return true;
@@ -252,9 +265,12 @@ public class EditarPrestamoDialog extends javax.swing.JDialog {
         if (!validarFecha()) return;
 
         Date nuevaFecha = dtFechaPrestamo.getDate();
+        
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        String fechaFormateada = sdf.format(nuevaFecha);
 
         int confirm = JOptionPane.showConfirmDialog(this,
-            "¿Actualizar fecha de devolución a " + nuevaFecha + "?",
+            "¿Actualizar fecha de devolución a " + fechaFormateada + "?",
             "Confirmar",
             JOptionPane.YES_NO_OPTION);
 
